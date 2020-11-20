@@ -6,7 +6,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 hostname = socket.gethostname()
 port = 45000
 # bind the connection to the client in this case the client is in the same machine as the server
-sock.bind((hostname,port));
+sock.bind((hostname,port))
 
 # start listening
 sock.listen(5)

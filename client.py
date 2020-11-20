@@ -8,6 +8,13 @@ port = 45000
 
 sock.connect((hostname,port))
 
-msg = sock.recv(8)
+full_msg = ''
 
-print(msg.decode('utf-8'))
+while True:
+    msg = sock.recv(8)
+    if len(msg) <= 0:
+        break
+    full_msg += msg.decode('utf-8')
+
+
+print(full_msg)  
