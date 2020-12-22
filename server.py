@@ -1,25 +1,32 @@
-import socket
+import socket 
+from concurrent import futures
 
-# AF_INET => IPV4 / SOCK_STREAM => TCP
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+HOST = '127.0.0.1' 
+PORT = 60000
+list_threads = []
 
-hostname = socket.gethostname()
-port = 45000
-# bind the connection to the client in this case the client is in the same machine as the server
-sock.bind((hostname,port))
+def start_conn(conn,addr):
+        if(conn):
+            print(f'{addr} Connected')
+            while True:
+                data = conn.recv(1024)
+                if not data:
+                    print(f"{addr} disconnected")
+                    break
+                else:
+                    print(f"{data}")
+                    conn.sendall(data)
+            s.close()
 
-# start listening
-sock.listen(5)
-print("Started the server")
-while True :
-    # when connection is made get the client_socket and the client_addr
-    client_socket, client_addr = sock.accept()
+with futures.ThreadPoolExecutor() as executer:
+    while True:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.bind((HOST,PORT))
+            s.listen()
+            conn, addr = s.accept()
+            thread = executer.submit(start_conn, conn,addr)
+            list_threads.append(thread)
 
-    print(f"Connection from address {client_addr}")
-    # send the response back to the client!
-    client_socket.send(bytes('Welcome to the server!', "utf-8"))
+for thread in list_threads:
+    thread.join()
 
-
-    #close the socket ( connection ) after sending back the data 
-
-    client_socket.close()

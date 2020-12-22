@@ -1,20 +1,19 @@
 import socket
 
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+HOST = '127.0.0.1'
+PORT = 60000
 
-hostname = socket.gethostname()
-port = 45000
-
-sock.connect((hostname,port))
-
-full_msg = ''
-
-while True:
-    msg = sock.recv(8)
-    if len(msg) <= 0:
-        break
-    full_msg += msg.decode('utf-8')
-
-
-print(full_msg)  
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.connect((HOST,PORT))
+    while True:
+        msg = input("Please enter Message: ")
+        print(msg)
+        if msg == ':q':
+            s.close()
+            break
+        else:
+            s.sendall(bytes(msg, 'utf-8'))
+            data = s.recv(1024)
+print('Disconnected')
+    
